@@ -65,3 +65,51 @@ public class ClothesController : ControllerBase
         return Ok(result);
     }
 }
+public class AddClothesDto
+{
+    public string Name { get; set; }
+    public string Category { get; set; }
+    public string Password { get; set; }
+}
+[ApiController]
+[Route("api/[controller]")]
+public class ClothesController : ControllerBase
+{
+    private readonly IConfiguration _configuration;
+    private readonly AppDbContext _context; // Dodajemy bazę danych
+
+    // Konstruktor
+    public ClothesController(IConfiguration configuration, AppDbContext context)
+    {
+        _configuration = configuration;
+        _context = context;
+    }
+
+    // ... Tutaj masz swoją dotychczasową metodę [HttpGet("random")] ...
+
+    // NOWA METODA DO DODAWANIA UBRAŃ
+    [HttpPost("add")]
+    public async Task<IActionResult> AddClothingItem([FromBody] AddClothesDto request)
+    {
+        // 1. Sprawdzamy hasło (pobierane z bezpiecznego Azure)
+        var correctPassword = _configuration["AppOptions:AccessPassword"];
+        if (request.Password != correctPassword)
+        {
+            return Unauthorized("Błędne hasło.");
+        }
+
+        // 2. Tworzymy nowe ubranie
+        var newItem = new ClothingItem 
+        { 
+            Name = request.Name, 
+            Category = request.Category 
+            // Jeśli nazwałeś tę klasę inaczej w C#, użyj swojej nazwy np. Clothes
+        };
+
+        // 3. Zapisujemy do bazy
+        _context.Clothes.Add(newItem); // Upewnij się, że "Clothes" to nazwa Twojego DbSet w AppDbContext
+        await _context.SaveChangesAsync();
+
+        return Ok(newItem);
+    }
+}

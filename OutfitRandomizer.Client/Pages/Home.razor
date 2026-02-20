@@ -21,6 +21,40 @@
             <button @onclick="Losuj" class="btn-primary">
                 ✨ LOSUJ OUTFIT ✨
             </button>
+            <hr class="my-4" />
+            <div class="card p-3 shadow-sm mt-3">
+                <h4 class="text-center mb-3">➕ Dodaj nową rzecz do szafy</h4>
+                
+                <div class="form-group mb-2">
+                    <label>Nazwa (np. Czerwony sweter):</label>
+                    <input class="form-control" @bind="newItemName" placeholder="Wpisz nazwę..." />
+                </div>
+            
+                <div class="form-group mb-3">
+                    <label>Kategoria:</label>
+                    <select class="form-select" @bind="newItemCategory">
+                        <option value="">-- Wybierz kategorię --</option>
+                        <option value="Spodnie Zwykłe">Spodnie Zwykłe</option>
+                        <option value="Spodnie Dresowe">Spodnie Dresowe</option>
+                        <option value="Legginsy">Legginsy</option>
+                        <option value="Spódnice">Spódnice</option>
+                        <option value="Sukienki">Sukienki</option>
+                        <option value="Bluzki (Luźniejsze)">Bluzki (Luźniejsze)</option>
+                        <option value="Bluzki (Obcisłe)">Bluzki (Obcisłe)</option>
+                        <option value="Bluzy">Bluzy</option>
+                        <option value="Bluzy (rozpinane)">Bluzy (rozpinane)</option>
+                    </select>
+                </div>
+            
+                <button class="btn btn-success w-100" @onclick="DodajUbranie" disabled="@isAdding">
+                    @(isAdding ? "Dodaję do bazy..." : "➕ DODAJ DO SZAFY")
+                </button>
+            
+                @if (!string.IsNullOrEmpty(addMessage))
+                {
+                    <div class="alert alert-info mt-3 text-center">@addMessage</div>
+                }
+            </div>
         </div>
 
         @if (!string.IsNullOrEmpty(errorMessage))
@@ -147,19 +181,27 @@
 </style>
 
 @code {
+    // === TWOJE ZMIENNE DO LOSOWANIA ===
     private string password = "";
     private bool chceBluze = false;
     private string? errorMessage;
     private List<ClothingItem>? outfit;
 
+    // === NOWE ZMIENNE DO DODAWANIA ===
+    private string newItemName = "";
+    private string newItemCategory = "";
+    private bool isAdding = false;
+    private string? addMessage;
+
+    // === TWOJA METODA LOSUJ ===
     private async Task Losuj()
     {
         errorMessage = null;
-        try 
+        try
         {
             var url = $"api/clothes/random?password={password}&includeHoodie={chceBluze}";
             var response = await Http.GetAsync(url);
-            
+
             if (response.IsSuccessStatusCode)
             {
                 outfit = await response.Content.ReadFromJsonAsync<List<ClothingItem>>();
@@ -176,8 +218,67 @@
         }
     }
 
+    // === NOWA METODA DODAWANIA ===
+    private async Task DodajUbranie()
+    {
+        // Sprawdzamy, czy pola nie są puste
+        if (string.IsNullOrWhiteSpace(newItemName) || string.IsNullOrWhiteSpace(newItemCategory))
+        {
+            addMessage = "❌ Wpisz nazwę i wybierz kategorię!";
+            return;
+        }
+
+        // Używamy hasła z głównego pola u góry strony
+        if (string.IsNullOrWhiteSpace(password))
+        {
+            addMessage = "❌ Wpisz najpierw hasło u góry strony!";
+            return;
+        }
+
+        isAdding = true;
+        addMessage = null;
+
+        var requestBody = new 
+        { 
+            Name = newItemName, 
+            Category = newItemCategory, 
+            Password = password 
+        };
+
+        try
+        {
+            // Pamiętaj, żeby endpoint w API (ClothesController) zgadzał się z tym adresem:
+            var response = await Http.PostAsJsonAsync("api/clothes/add", requestBody);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                addMessage = $"✅ Dodano: {newItemName}";
+                newItemName = ""; // Czyścimy pole po udanym dodaniu
+                newItemCategory = ""; // Resetujemy listę
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
+            {
+                addMessage = "❌ Błędne hasło!";
+            }
+            else
+            {
+                addMessage = "❌ Wystąpił błąd na serwerze.";
+            }
+        }
+        catch (Exception)
+        {
+            addMessage = "❌ Brak połączenia z serwerem.";
+        }
+        finally
+        {
+            isAdding = false;
+        }
+    }
+
+    // === TWOJA KLASA UBRAŃ ===
     public class ClothingItem {
         public string Name { get; set; } = "";
         public string Category { get; set; } = "";
     }
+}
 }
