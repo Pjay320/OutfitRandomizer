@@ -9,7 +9,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 // W pliku Program.cs projektu .Client
 builder.Services.AddScoped(sp => new HttpClient 
 { 
-    BaseAddress = new Uri("szafa-api-pjay-ejevf0h5gvd5fvfp.germanywestcentral-01.azurewebsites.net") // Wpisz TU swój adres z API
+    BaseAddress = new Uri("https://szafa-api-pjay-ejevf0h5gvd5fvfp.germanywestcentral-01.azurewebsites.net") // Wpisz TU swój adres z API
 });
 
 await builder.Build().RunAsync();
