@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OutfitRandomizer.Api.Data;
 using OutfitRandomizer.Api.Models;
+using Microsoft.Extensions.Configuration; // <-- Dodałem to, żeby czytać ustawienia z Azure
 
 namespace OutfitRandomizer.Api.Controllers;
 
@@ -10,17 +11,22 @@ namespace OutfitRandomizer.Api.Controllers;
 public class ClothesController : ControllerBase
 {
     private readonly AppDbContext _context;
+    private readonly IConfiguration _configuration; // <-- Zmienna do trzymania konfiguracji
     private readonly Random _random = new();
 
-    public ClothesController(AppDbContext context)
+    // Dodaliśmy IConfiguration do konstruktora!
+    public ClothesController(AppDbContext context, IConfiguration configuration)
     {
         _context = context;
+        _configuration = configuration;
     }
 
     [HttpGet("random")]
     public async Task<ActionResult<IEnumerable<ClothingItem>>> GetRandomOutfit([FromQuery] string password, [FromQuery] bool includeHoodie = false)
     {
-        if (password != "mojetajnehaslo") 
+        // 1. Zmienione na pobieranie bezpiecznego hasła z Azure!
+        var correctPassword = _configuration["AppOptions:AccessPassword"];
+        if (password != correctPassword) 
         {
             return Unauthorized("Błędne hasło!");
         }
@@ -64,6 +70,7 @@ public class ClothesController : ControllerBase
 
         return Ok(result);
     }
+
     [HttpPost("add")]
     public async Task<IActionResult> AddClothingItem([FromBody] AddClothesDto request)
     {
@@ -78,9 +85,11 @@ public class ClothesController : ControllerBase
         return Ok(newItem);
     }
 }
+
+// Klasa DTO (Data Transfer Object) zostaje na dole
 public class AddClothesDto
 {
-    public string Name { get; set; }
-    public string Category { get; set; }
-    public string Password { get; set; }
+    public string Name { get; set; } = "";
+    public string Category { get; set; } = "";
+    public string Password { get; set; } = "";
 }
