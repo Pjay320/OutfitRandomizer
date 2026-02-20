@@ -1,0 +1,183 @@
+﻿@page "/"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<PageTitle>Twoja Szafa</PageTitle>
+
+<div class="main-container">
+    <div class="glass-card">
+        <h1 class="title">👗 Outfit Randomizer 👔</h1>
+        <p class="subtitle">Wylosuj swój idealny zestaw na dziś</p>
+
+        <div class="controls">
+            <input type="password" @bind="password" placeholder="Wpisz hasło..." class="styled-input" />
+            
+            <label class="checkbox-container">
+                <input type="checkbox" @bind="chceBluze" />
+                <span class="checkmark"></span>
+                Zestaw z bluzą (3 części)
+            </label>
+
+            <button @onclick="Losuj" class="btn-primary">
+                ✨ LOSUJ OUTFIT ✨
+            </button>
+        </div>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-msg">⚠️ @errorMessage</div>
+        }
+    </div>
+
+    @if (outfit != null)
+    {
+        <div class="results-container">
+            @foreach (var item in outfit)
+            {
+                <div class="outfit-card">
+                    <div class="category-badge">@item.Category</div>
+                    <div class="item-name">@item.Name</div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    /* GŁÓWNY KONTENER */
+    .main-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 40px 20px;
+        font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* KARTA Z LOGOWANIEM */
+    .glass-card {
+        background: white;
+        padding: 30px;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        text-align: center;
+        max-width: 500px;
+        width: 100%;
+        margin-bottom: 40px;
+    }
+
+    .title { color: #2d3436; font-weight: 800; margin-bottom: 5px; }
+    .subtitle { color: #636e72; margin-bottom: 25px; font-size: 0.9em; }
+
+    /* INPUTY I PRZYCISKI */
+    .controls { display: flex; flex-direction: column; gap: 15px; align-items: center; }
+
+    .styled-input {
+        width: 100%;
+        padding: 12px 15px;
+        border: 2px solid #eee;
+        border-radius: 12px;
+        outline: none;
+        transition: 0.3s;
+        text-align: center;
+    }
+    .styled-input:focus { border-color: #6c5ce7; }
+
+    .btn-primary {
+        background: #6c5ce7;
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 12px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s;
+        width: 100%;
+        font-size: 1.1em;
+    }
+    .btn-primary:hover { background: #5b4cc4; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); }
+
+    /* CHECKBOX */
+    .checkbox-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        cursor: pointer;
+        color: #2d3436;
+        user-select: none;
+    }
+
+    /* KARTY Z UBRANIAMI */
+    .results-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        flex-wrap: wrap;
+        max-width: 1000px;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .outfit-card {
+        background: white;
+        padding: 25px;
+        border-radius: 18px;
+        width: 220px;
+        text-align: center;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 5px solid #6c5ce7;
+        transition: 0.3s;
+    }
+    .outfit-card:hover { transform: scale(1.05); }
+
+    .category-badge {
+        font-size: 0.7em;
+        text-transform: uppercase;
+        font-weight: 900;
+        color: #a29bfe;
+        margin-bottom: 10px;
+        letter-spacing: 1px;
+    }
+    .item-name { font-size: 1.1em; font-weight: 600; color: #2d3436; }
+
+    .error-msg { color: #ff7675; margin-top: 15px; font-weight: bold; }
+
+    @@keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+</style>
+
+@code {
+    private string password = "";
+    private bool chceBluze = false;
+    private string? errorMessage;
+    private List<ClothingItem>? outfit;
+
+    private async Task Losuj()
+    {
+        errorMessage = null;
+        try 
+        {
+            var url = $"api/clothes/random?password={password}&includeHoodie={chceBluze}";
+            var response = await Http.GetAsync(url);
+            
+            if (response.IsSuccessStatusCode)
+            {
+                outfit = await response.Content.ReadFromJsonAsync<List<ClothingItem>>();
+            }
+            else
+            {
+                errorMessage = "Błędne hasło! Spróbuj jeszcze raz.";
+                outfit = null;
+            }
+        }
+        catch (Exception)
+        {
+            errorMessage = "Błąd połączenia z API. Sprawdź czy projekt .Api działa.";
+        }
+    }
+
+    public class ClothingItem {
+        public string Name { get; set; } = "";
+        public string Category { get; set; } = "";
+    }
+}

@@ -1,0 +1,22 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <main>
+        <div class="content">
+            @Body
+        </div>
+    </main>
+</div>
+
+<style>
+    /* Robimy tło na całą stronę, żeby nie było widać "szwów" */
+    .page {
+        background: #f8f9fa;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+    .content {
+        padding: 0 !important;
+    }
+</style>

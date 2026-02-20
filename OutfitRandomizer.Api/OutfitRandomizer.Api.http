@@ -1,0 +1,6 @@
+@OutfitRandomizer.Api_HostAddress = http://localhost:5090
+
+GET {{OutfitRandomizer.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
