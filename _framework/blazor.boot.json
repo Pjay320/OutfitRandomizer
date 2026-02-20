@@ -1,7 +1,7 @@
 {
   "mainAssemblyName": "OutfitRandomizer.Client",
   "resources": {
-    "hash": "sha256-IZxWVWzqlOIUyD25l3MgczTegT9G2WeFilWcnBCGXEU=",
+    "hash": "sha256-H1gi2rth91Ho2to78SZ6rWJz4/dNk8xExryvdVLEXQo=",
     "fingerprinting": {
       "Microsoft.AspNetCore.Components.ctk0c6x5kf.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.7apenvi18o.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
@@ -36,7 +36,7 @@
       "System.Text.Json.bhdyf15wek.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.vbr1gezq3a.wasm": "System.Text.RegularExpressions.wasm",
       "System.Private.CoreLib.faxmto433v.wasm": "System.Private.CoreLib.wasm",
-      "OutfitRandomizer.Client.3ppfjwacgq.wasm": "OutfitRandomizer.Client.wasm",
+      "OutfitRandomizer.Client.v4m8nrsuq0.wasm": "OutfitRandomizer.Client.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.xidrk0eo52.js": "dotnet.native.js",
       "dotnet.native.y68cfu4kuf.wasm": "dotnet.native.wasm",
@@ -95,7 +95,7 @@
       "System.Text.Encodings.Web.qyidcnqnsa.wasm": "sha256-QkmFquk4BHgFDVkCakoTzmLIV9UuzTDf4Fw62XFkzsA=",
       "System.Text.Json.bhdyf15wek.wasm": "sha256-QSTrpz9xSaSOhB3iYl/H+pzKyYmQ/a3JxLXtCfWKcuM=",
       "System.Text.RegularExpressions.vbr1gezq3a.wasm": "sha256-ZQejR0x7+S2JJA2Z1IkLWqWXukLRjL/c/zguib2fpHo=",
-      "OutfitRandomizer.Client.3ppfjwacgq.wasm": "sha256-Kb3fx8x4v02P1HRO2nqheJWs4EaG2XZYHe/9NhskkVg="
+      "OutfitRandomizer.Client.v4m8nrsuq0.wasm": "sha256-8dpRxoETzVqdABfFN/VroyVqCjaAuq58e0S8J2QNdPo="
     }
   },
   "cacheBootResources": true,
