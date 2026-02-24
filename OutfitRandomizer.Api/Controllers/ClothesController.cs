@@ -37,7 +37,7 @@ public class ClothesController : ControllerBase
         if (includeHoodie)
         {
             // 1. Losujemy BLUZĘ
-            var hoodies = allItems.Where(i => i.Category == "Bluzy").ToList();
+            var hoodies = allItems.Where(i => i.Category.Contains("Bluzy")|| i.Category ==  "Bluzy (rozpinane)").ToList();
             if (hoodies.Any()) result.Add(hoodies[_random.Next(hoodies.Count)]);
 
             // 2. Losujemy BLUZKĘ (pod bluzę)
