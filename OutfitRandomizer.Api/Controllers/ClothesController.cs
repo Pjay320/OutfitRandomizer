@@ -22,9 +22,8 @@ public class ClothesController : ControllerBase
     }
 
     [HttpGet("random")]
-    public async Task<ActionResult<IEnumerable<ClothingItem>>> GetRandomOutfit([FromQuery] string password, [FromQuery] bool includeHoodie = false)
+    public async Task<ActionResult<IEnumerable<ClothingItem>>> GetRandomOutfit([FromQuery] string password)
     {
-        // 1. Zmienione na pobieranie bezpiecznego hasła z Azure!
         var correctPassword = _configuration["AppOptions:AccessPassword"];
         if (password != correctPassword) 
         {
@@ -34,38 +33,44 @@ public class ClothesController : ControllerBase
         var allItems = await _context.Clothes.ToListAsync();
         var result = new List<ClothingItem>();
 
-        if (includeHoodie)
+        // 1. Losujemy GÓRĘ
+        var topCategories = new[] { "Bluzki luźne", "Bluzki wąskie", "Sukienki", "Onepiece" };
+        var tops = allItems.Where(i => topCategories.Contains(i.Category)).ToList();
+        
+        ClothingItem? selectedTop = null;
+        if (tops.Any())
         {
-            // 1. Losujemy BLUZĘ
-            var hoodies = allItems.Where(i => i.Category.Contains("Bluzy")).ToList();
-            if (hoodies.Any()) result.Add(hoodies[_random.Next(hoodies.Count)]);
-
-            // 2. Losujemy BLUZKĘ (pod bluzę)
-            var tops = allItems.Where(i => i.Category.Contains("Bluzki")).ToList();
-            if (tops.Any()) result.Add(tops[_random.Next(tops.Count)]);
-
-            // 3. Losujemy DÓŁ (Spodnie/Spódnice/Legginsy)
-            var bottoms = allItems.Where(i => i.Category.Contains("Spodnie") || i.Category == "Spódnice" || i.Category == "Legginsy").ToList();
-            if (bottoms.Any()) result.Add(bottoms[_random.Next(bottoms.Count)]);
+            selectedTop = tops[_random.Next(tops.Count)];
+            result.Add(selectedTop);
         }
-        else
+
+        // 2. Losujemy DÓŁ (zależnie od wylosowanej góry)
+        if (selectedTop != null)
         {
-            // Stara logika: Sukienka ALBO (Bluzka/Bluza + Dół)
-            bool isDressDay = _random.Next(1, 101) <= 20;
-
-            if (isDressDay)
+            if (selectedTop.Category == "Sukienki" || selectedTop.Category == "Onepiece")
             {
-                var dresses = allItems.Where(i => i.Category == "Sukienki").ToList();
-                if (dresses.Any()) result.Add(dresses[_random.Next(dresses.Count)]);
+                // Zgodnie z zasadą: nie losujemy dołu dla sukienek i onepiece
             }
-            else
+            else if (selectedTop.Category == "Bluzki wąskie") // W wytycznych nazwane "obcisłe", ale kategoria to "Bluzki wąskie"
             {
-                var tops = allItems.Where(i => i.Category.Contains("Bluzki") || i.Category.Contains ("Bluzy")).ToList();
-                if (tops.Any()) result.Add(tops[_random.Next(tops.Count)]);
-
-                var bottoms = allItems.Where(i => i.Category.Contains("Spodnie") || i.Category == "Spódnice" || i.Category == "Legginsy").ToList();
+                var allowedBottoms = new[] { "Spodnie zwykłe", "Spodnie dresowe", "Spódnice" };
+                var bottoms = allItems.Where(i => allowedBottoms.Contains(i.Category)).ToList();
                 if (bottoms.Any()) result.Add(bottoms[_random.Next(bottoms.Count)]);
             }
+            else if (selectedTop.Category == "Bluzki luźne")
+            {
+                var allBottomCategories = new[] { "Spodnie zwykłe", "Spodnie obcisłe", "Spodnie dresowe", "Spodnie/spódnice krótkie", "Spódnice" };
+                var bottoms = allItems.Where(i => allBottomCategories.Contains(i.Category)).ToList();
+                if (bottoms.Any()) result.Add(bottoms[_random.Next(bottoms.Count)]);
+            }
+        }
+
+        // 3. Losujemy DODATKOWĄ GÓRĘ (zawsze)
+        var extraTopCategories = new[] { "Bluzy nakładane", "Bluzy rozpinane" };
+        var extraTops = allItems.Where(i => extraTopCategories.Contains(i.Category)).ToList();
+        if (extraTops.Any())
+        {
+            result.Add(extraTops[_random.Next(extraTops.Count)]);
         }
 
         return Ok(result);
