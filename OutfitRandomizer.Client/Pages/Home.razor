@@ -12,11 +12,7 @@
         <div class="controls">
             <input type="password" @bind="password" placeholder="Wpisz hasło..." class="styled-input" />
             
-            <label class="checkbox-container">
-                <input type="checkbox" @bind="chceBluze" />
-                <span class="checkmark"></span>
-                Zestaw z bluzą (3 części)
-            </label>
+
 
             <button @onclick="Losuj" class="btn-primary">
                 ✨ LOSUJ OUTFIT ✨
@@ -32,18 +28,23 @@
             
                 <div class="form-group mb-3">
                     <label>Kategoria:</label>
-                    <select class="form-select" @bind="newItemCategory">
+                        <select class="form-select" @bind="newItemCategory">
                         <option value="">-- Wybierz kategorię --</option>
-                        <option value="Spodnie Zwykłe">Spodnie Zwykłe</option>
-                        <option value="Spodnie Dresowe">Spodnie Dresowe</option>
-                        <option value="Legginsy">Legginsy</option>
-                        <option value="Spódnice">Spódnice</option>
-                        <option value="Sukienki">Sukienki</option>
                         <option value="Bluzki (Luźniejsze)">Bluzki (Luźniejsze)</option>
                         <option value="Bluzki (Obcisłe)">Bluzki (Obcisłe)</option>
+                        <option value="Bluzki wąskie">Bluzki wąskie</option>
                         <option value="Bluzy">Bluzy</option>
                         <option value="Bluzy (rozpinane)">Bluzy (rozpinane)</option>
-                    </select>
+                        <option value="Bluzy nakładane">Bluzy nakładane</option>
+                        <option value="Legginsy">Legginsy</option>
+                        <option value="Onepiece">Onepiece</option>
+                        <option value="Spodnie Dresowe">Spodnie Dresowe</option>
+                        <option value="Spodnie obcisłe">Spodnie obcisłe</option>
+                        <option value="Spodnie Zwykłe">Spodnie Zwykłe</option>
+                        <option value="Spodnie/spódnice krótkie">Spodnie/spódnice krótkie</option>
+                        <option value="Spódnice">Spódnice</option>
+                        <option value="Sukienki">Sukienki</option>
+                        </select>
                 </div>
             
                 <button class="btn btn-success w-100" @onclick="DodajUbranie" disabled="@isAdding">
