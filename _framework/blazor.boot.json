@@ -1,9 +1,9 @@
 {
   "mainAssemblyName": "OutfitRandomizer.Client",
   "resources": {
-    "hash": "sha256-JPFVYz+aPuAGHBXnO4SeZrV7cexAz2rnRnQVHgYXDVA=",
+    "hash": "sha256-u3HtuquDuA9tRsQ00G6/BuJu9+1+tUMc9Dr2TNKyCcM=",
     "fingerprinting": {
-      "Microsoft.AspNetCore.Components.ctk0c6x5kf.wasm": "Microsoft.AspNetCore.Components.wasm",
+      "Microsoft.AspNetCore.Components.tu0nt1uvy5.wasm": "Microsoft.AspNetCore.Components.wasm",
       "Microsoft.AspNetCore.Components.Web.7apenvi18o.wasm": "Microsoft.AspNetCore.Components.Web.wasm",
       "Microsoft.AspNetCore.Components.WebAssembly.f7d5ki1b7c.wasm": "Microsoft.AspNetCore.Components.WebAssembly.wasm",
       "Microsoft.Extensions.Configuration.ell6o7ap7i.wasm": "Microsoft.Extensions.Configuration.wasm",
@@ -36,7 +36,7 @@
       "System.Text.Json.u44a06rcrf.wasm": "System.Text.Json.wasm",
       "System.Text.RegularExpressions.pjhal65ko1.wasm": "System.Text.RegularExpressions.wasm",
       "System.Private.CoreLib.ttydbid21v.wasm": "System.Private.CoreLib.wasm",
-      "OutfitRandomizer.Client.3x6hmenxvf.wasm": "OutfitRandomizer.Client.wasm",
+      "OutfitRandomizer.Client.ba2syon9ij.wasm": "OutfitRandomizer.Client.wasm",
       "dotnet.js": "dotnet.js",
       "dotnet.native.l1ds2rhypd.js": "dotnet.native.js",
       "dotnet.native.etgrtk5jba.wasm": "dotnet.native.wasm",
@@ -64,7 +64,7 @@
       "System.Private.CoreLib.ttydbid21v.wasm": "sha256-kbTwfVfR6dhzqlV9inFJi/nd9hN7XPMw9tpiYm+bKfk="
     },
     "assembly": {
-      "Microsoft.AspNetCore.Components.ctk0c6x5kf.wasm": "sha256-YB2sGqc11d5CQOuxPBhtieYgot2MxA3k6XxWNa7O0BU=",
+      "Microsoft.AspNetCore.Components.tu0nt1uvy5.wasm": "sha256-6xpqV3gzx6+8Vs22Wln7+ZyPj+IzrePdUQPYuI5wUl0=",
       "Microsoft.AspNetCore.Components.Web.7apenvi18o.wasm": "sha256-fyqnB2DYAO80AStwVkG2g+mFplGXI54QNWpUbk5VoiE=",
       "Microsoft.AspNetCore.Components.WebAssembly.f7d5ki1b7c.wasm": "sha256-G74GO3JpQ5AIhvZ1OA8nJzqsKV3qYlQPuMTvoZbOyrk=",
       "Microsoft.Extensions.Configuration.ell6o7ap7i.wasm": "sha256-0iZA+rfvr3lLmK5V18g0LZCU41c3mbTL9jNYRoavdB0=",
@@ -95,7 +95,7 @@
       "System.Text.Encodings.Web.z5osepan0o.wasm": "sha256-qWRckNgJUXP/8BMc9tmHvES2SMAuHimXyFmWjbXrfM8=",
       "System.Text.Json.u44a06rcrf.wasm": "sha256-kkTQZ9xWSTDP8dJyevG7o+vGPmtCUdfZrJjpbu2OoKw=",
       "System.Text.RegularExpressions.pjhal65ko1.wasm": "sha256-VdTVx7BqfLgxpexvMTkSI3N233xrnZp5GxwrZM9G28k=",
-      "OutfitRandomizer.Client.3x6hmenxvf.wasm": "sha256-R7tA7ll876o/kCD08NY7U27OCRZikqVbCYf8bpeDMmE="
+      "OutfitRandomizer.Client.ba2syon9ij.wasm": "sha256-k2wDLOMWPXpOi7JUC6izf9BQHgNawbsgXUVYuT4aKjQ="
     }
   },
   "cacheBootResources": true,
