@@ -1,8 +1,9 @@
-﻿name: Deploy to GitHub Pages
-
-on:
+﻿on:
   push:
-    branches: [ main, master ] # Zadziała dla obu nazw gałęzi
+    branches: [ main, master ]
+    paths:
+      - 'OutfitRandomizer.Client/**' # Będzie śledzić tylko zmiany w folderze frontendu
+      - '.github/workflows/deploy.yaml'
 
 jobs:
   deploy-to-github-pages:
