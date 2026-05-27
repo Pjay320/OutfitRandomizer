@@ -4,104 +4,153 @@
 
 <PageTitle>Twoja Szafa</PageTitle>
 
-<div class="main-container">
-    <div class="glass-card">
-        <h1 class="title">👗 Outfit Randomizer 👔</h1>
-        <p class="subtitle">Wylosuj swój idealny zestaw na dziś</p>
+<div class="page-wrapper">
+    
+    <div class="left-panel">
+        <div class="glass-card">
+            <h1 class="title">👗 Outfit Randomizer 👔</h1>
+            <p class="subtitle">Wylosuj swój idealny zestaw na dziś</p>
 
-        <div class="controls">
-            <input type="password" @bind="password" placeholder="Wpisz hasło..." class="styled-input" />
-            
+            <div class="controls">
+                <input type="password" @bind="password" placeholder="Wpisz hasło..." class="styled-input" />
 
-
-            <button @onclick="Losuj" class="btn-primary">
-                ✨ LOSUJ OUTFIT ✨
-            </button>
-            <hr class="my-4" />
-            <div class="card p-3 shadow-sm mt-3">
-                <h4 class="text-center mb-3">➕ Dodaj nową rzecz do szafy</h4>
-                
-                <div class="form-group mb-2">
-                    <label>Nazwa (np. Czerwony sweter):</label>
-                    <input class="form-control" @bind="newItemName" placeholder="Wpisz nazwę..." />
-                </div>
-            
-                <div class="form-group mb-3">
-                    <label>Kategoria:</label>
-                        <select class="form-select" @bind="newItemCategory">
-                        <option value="">-- Wybierz kategorię --</option>
-                        <option value="Bluzki (Luźniejsze)">Bluzki (Luźniejsze)</option>
-                        <option value="Bluzki (Obcisłe)">Bluzki (Obcisłe)</option>
-                        <option value="Bluzki wąskie">Bluzki wąskie</option>
-                        <option value="Bluzy">Bluzy</option>
-                        <option value="Bluzy (rozpinane)">Bluzy (rozpinane)</option>
-                        <option value="Bluzy nakładane">Bluzy nakładane</option>
-                        <option value="Legginsy">Legginsy</option>
-                        <option value="Onepiece">Onepiece</option>
-                        <option value="Spodnie Dresowe">Spodnie Dresowe</option>
-                        <option value="Spodnie obcisłe">Spodnie obcisłe</option>
-                        <option value="Spodnie Zwykłe">Spodnie Zwykłe</option>
-                        <option value="Spodnie/spódnice krótkie">Spodnie/spódnice krótkie</option>
-                        <option value="Spódnice">Spódnice</option>
-                        <option value="Sukienki">Sukienki</option>
-                        </select>
-                </div>
-            
-                <button class="btn btn-success w-100" @onclick="DodajUbranie" disabled="@isAdding">
-                    @(isAdding ? "Dodaję do bazy..." : "➕ DODAJ DO SZAFY")
+                <button @onclick="AutoryzujILosuj" class="btn-primary">
+                    ✨ LOSUJ OUTFIT ✨
                 </button>
-            
-                @if (!string.IsNullOrEmpty(addMessage))
-                {
-                    <div class="alert alert-info mt-3 text-center">@addMessage</div>
-                }
+                <hr class="my-4 w-100" />
+                <div class="card p-3 shadow-sm mt-3 w-100">
+                    <h4 class="text-center mb-3">➕ Dodaj nową rzecz do szafy</h4>
+                    
+                    <div class="form-group mb-2 text-start">
+                        <label>Nazwa (np. Czerwony sweter):</label>
+                        <input class="form-control" @bind="newItemName" placeholder="Wpisz nazwę..." />
+                    </div>
+                
+                    <div class="form-group mb-3 text-start">
+                        <label>Kategoria:</label>
+                        <select class="form-select" @bind="newItemCategory">
+                            <option value="">-- Wybierz kategorię --</option>
+                            <option value="Bluzki luźne">Bluzki luźne</option>
+                            <option value="Bluzki wąskie">Bluzki wąskie</option>
+                            <option value="Bluzy nakładane">Bluzy nakładane</option>
+                            <option value="Bluzy rozpinane">Bluzy rozpinane</option>
+                            <option value="Onepiece">Onepiece</option>
+                            <option value="Spódnice">Spódnice</option>
+                            <option value="Spodnie dresowe">Spodnie dresowe</option>
+                            <option value="Spodnie obcisłe">Spodnie obcisłe</option>
+                            <option value="Spodnie zwykłe">Spodnie zwykłe</option>
+                            <option value="Spodnie/spódnice krótkie">Spodnie/spódnice krótkie</option>
+                            <option value="Sukienki">Sukienki</option>
+                        </select>
+                    </div>
+                
+                    <button class="btn btn-success w-100" @onclick="DodajUbranie" disabled="@isAdding">
+                        @(isAdding ? "Dodaję do bazy..." : "➕ DODAJ DO SZAFY")
+                    </button>
+                
+                    @if (!string.IsNullOrEmpty(addMessage))
+                    {
+                        <div class="alert alert-info mt-3 text-center">@addMessage</div>
+                    }
+                </div>
             </div>
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                <div class="error-msg">⚠️ @errorMessage</div>
+            }
         </div>
 
-        @if (!string.IsNullOrEmpty(errorMessage))
+        @if (outfit != null)
         {
-            <div class="error-msg">⚠️ @errorMessage</div>
+            <div class="results-container">
+                @foreach (var item in outfit)
+                {
+                    <div class="outfit-card">
+                        <div class="category-badge">@item.Category</div>
+                        <div class="item-name">@item.Name</div>
+                    </div>
+                }
+            </div>
         }
     </div>
 
-    @if (outfit != null)
-    {
-        <div class="results-container">
-            @foreach (var item in outfit)
-            {
-                <div class="outfit-card">
-                    <div class="category-badge">@item.Category</div>
-                    <div class="item-name">@item.Name</div>
-                </div>
-            }
-        </div>
-    }
+    <div class="right-panel glass-card">
+        <h2 class="title mb-4">🗄️ Twoja Baza Ubrań</h2>
+        
+        @if (isLoggedIn && allClothes != null)
+        {
+            <div class="table-responsive" style="max-height: 700px; overflow-y: auto;">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light sticky-top">
+                        <tr>
+                            <th>Kategoria</th>
+                            <th>Nazwa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in allClothes)
+                        {
+                            <tr>
+                                <td><span class="badge bg-secondary">@item.Category</span></td>
+                                <td>@item.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        }
+        else
+        {
+            <div class="text-muted text-center mt-5">
+                <p>Wpisz prawidłowe hasło po lewej stronie i kliknij <strong>LOSUJ</strong>, aby odblokować podgląd bazy ubrań.</p>
+            </div>
+        }
+    </div>
+
 </div>
 
 <style>
-    /* GŁÓWNY KONTENER */
-    .main-container {
+    /* GŁÓWNY LAYOUT (PODZIAŁ NA KOLUMNY) */
+    .page-wrapper {
         display: flex;
-        flex-direction: column;
-        align-items: center;
+        flex-direction: row;
+        align-items: flex-start;
+        justify-content: center;
+        gap: 30px;
         padding: 40px 20px;
+        max-width: 1400px;
+        margin: 0 auto;
         font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
-    /* KARTA Z LOGOWANIEM */
+    .left-panel {
+        flex: 1;
+        max-width: 500px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .right-panel {
+        flex: 1.5;
+        max-width: 800px;
+        height: 100%;
+        text-align: left;
+    }
+
+    /* KARTY */
     .glass-card {
         background: white;
         padding: 30px;
         border-radius: 20px;
         box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-        text-align: center;
-        max-width: 500px;
         width: 100%;
-        margin-bottom: 40px;
+        margin-bottom: 30px;
     }
 
-    .title { color: #2d3436; font-weight: 800; margin-bottom: 5px; }
-    .subtitle { color: #636e72; margin-bottom: 25px; font-size: 0.9em; }
+    .title { color: #2d3436; font-weight: 800; margin-bottom: 5px; text-align: center; }
+    .subtitle { color: #636e72; margin-bottom: 25px; font-size: 0.9em; text-align: center; }
 
     /* INPUTY I PRZYCISKI */
     .controls { display: flex; flex-direction: column; gap: 15px; align-items: center; }
@@ -131,23 +180,13 @@
     }
     .btn-primary:hover { background: #5b4cc4; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(108, 92, 231, 0.4); }
 
-    /* CHECKBOX */
-    .checkbox-container {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        cursor: pointer;
-        color: #2d3436;
-        user-select: none;
-    }
-
     /* KARTY Z UBRANIAMI */
     .results-container {
         display: flex;
         justify-content: center;
         gap: 20px;
         flex-wrap: wrap;
-        max-width: 1000px;
+        width: 100%;
         animation: fadeIn 0.5s ease-out;
     }
 
@@ -155,7 +194,7 @@
         background: white;
         padding: 25px;
         border-radius: 18px;
-        width: 220px;
+        width: 100%;
         text-align: center;
         box-shadow: 0 4px 15px rgba(0,0,0,0.05);
         border-top: 5px solid #6c5ce7;
@@ -173,34 +212,64 @@
     }
     .item-name { font-size: 1.1em; font-weight: 600; color: #2d3436; }
 
-    .error-msg { color: #ff7675; margin-top: 15px; font-weight: bold; }
+    .error-msg { color: #ff7675; margin-top: 15px; font-weight: bold; text-align: center; }
 
     @@keyframes fadeIn {
         from { opacity: 0; transform: translateY(20px); }
         to { opacity: 1; transform: translateY(0); }
     }
+
+    /* Responsywność dla urządzeń mobilnych */
+    @@media (max-width: 992px) {
+        .page-wrapper { flex-direction: column; align-items: center; }
+        .right-panel { width: 100%; }
+    }
 </style>
 
 @code {
-    // === TWOJE ZMIENNE DO LOSOWANIA ===
     private string password = "";
-    private bool chceBluze = false;
     private string? errorMessage;
     private List<ClothingItem>? outfit;
 
-    // === NOWE ZMIENNE DO DODAWANIA ===
     private string newItemName = "";
     private string newItemCategory = "";
     private bool isAdding = false;
     private string? addMessage;
 
-    // === TWOJA METODA LOSUJ ===
+    // --- NOWE ZMIENNE DO TABELI ---
+    private List<ClothingItem>? allClothes;
+    private bool isLoggedIn = false;
+
+    private async Task AutoryzujILosuj()
+    {
+        await Losuj();
+        
+        if (errorMessage == null)
+        {
+            await PobierzBaze();
+        }
+    }
+
+    private async Task PobierzBaze()
+    {
+        try
+        {
+            var response = await Http.GetAsync($"api/clothes/all?password={password}");
+            if (response.IsSuccessStatusCode)
+            {
+                allClothes = await response.Content.ReadFromJsonAsync<List<ClothingItem>>();
+                isLoggedIn = true;
+            }
+        }
+        catch (Exception) { /* Ignorujemy błąd pobierania tabeli */ }
+    }
+
     private async Task Losuj()
     {
         errorMessage = null;
         try
         {
-            var url = $"api/clothes/random?password={password}&includeHoodie={chceBluze}";
+            var url = $"api/clothes/random?password={password}";
             var response = await Http.GetAsync(url);
 
             if (response.IsSuccessStatusCode)
@@ -211,6 +280,7 @@
             {
                 errorMessage = "Błędne hasło! Spróbuj jeszcze raz.";
                 outfit = null;
+                isLoggedIn = false;
             }
         }
         catch (Exception)
@@ -219,17 +289,14 @@
         }
     }
 
-    // === NOWA METODA DODAWANIA ===
     private async Task DodajUbranie()
     {
-        // Sprawdzamy, czy pola nie są puste
         if (string.IsNullOrWhiteSpace(newItemName) || string.IsNullOrWhiteSpace(newItemCategory))
         {
             addMessage = "❌ Wpisz nazwę i wybierz kategorię!";
             return;
         }
 
-        // Używamy hasła z głównego pola u góry strony
         if (string.IsNullOrWhiteSpace(password))
         {
             addMessage = "❌ Wpisz najpierw hasło u góry strony!";
@@ -238,7 +305,6 @@
 
         isAdding = true;
         addMessage = null;
-
         var requestBody = new 
         { 
             Name = newItemName, 
@@ -248,14 +314,15 @@
 
         try
         {
-            // Pamiętaj, żeby endpoint w API (ClothesController) zgadzał się z tym adresem:
             var response = await Http.PostAsJsonAsync("api/clothes/add", requestBody);
-            
             if (response.IsSuccessStatusCode)
             {
                 addMessage = $"✅ Dodano: {newItemName}";
-                newItemName = ""; // Czyścimy pole po udanym dodaniu
-                newItemCategory = ""; // Resetujemy listę
+                newItemName = ""; 
+                newItemCategory = "";
+                
+                // Odświeżamy tabelę po dodaniu nowego przedmiotu
+                await PobierzBaze();
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Unauthorized)
             {
@@ -276,10 +343,8 @@
         }
     }
 
-    // === TWOJA KLASA UBRAŃ ===
     public class ClothingItem {
         public string Name { get; set; } = "";
         public string Category { get; set; } = "";
     }
-}
 }

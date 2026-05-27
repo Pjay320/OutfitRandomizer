@@ -44,14 +44,11 @@ public class ClothesController : ControllerBase
             result.Add(selectedTop);
         }
 
-        // 2. Losujemy DÓŁ (zależnie od wylosowanej góry)
+        // 2. Losujemy DÓŁ
         if (selectedTop != null)
         {
-            if (selectedTop.Category == "Sukienki" || selectedTop.Category == "Onepiece")
-            {
-                // Zgodnie z zasadą: nie losujemy dołu dla sukienek i onepiece
-            }
-            else if (selectedTop.Category == "Bluzki wąskie") // W wytycznych nazwane "obcisłe", ale kategoria to "Bluzki wąskie"
+            if (selectedTop.Category == "Sukienki" || selectedTop.Category == "Onepiece") { /* nic */ }
+            else if (selectedTop.Category == "Bluzki wąskie")
             {
                 var allowedBottoms = new[] { "Spodnie zwykłe", "Spodnie dresowe", "Spódnice" };
                 var bottoms = allItems.Where(i => allowedBottoms.Contains(i.Category)).ToList();
@@ -65,7 +62,7 @@ public class ClothesController : ControllerBase
             }
         }
 
-        // 3. Losujemy DODATKOWĄ GÓRĘ (zawsze)
+        // 3. Losujemy DODATKOWĄ GÓRĘ (ZAWSZE)
         var extraTopCategories = new[] { "Bluzy nakładane", "Bluzy rozpinane" };
         var extraTops = allItems.Where(i => extraTopCategories.Contains(i.Category)).ToList();
         if (extraTops.Any())
@@ -76,20 +73,19 @@ public class ClothesController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("add")]
-    public async Task<IActionResult> AddClothingItem([FromBody] AddClothesDto request)
+    [HttpGet("all")]
+    public async Task<ActionResult<IEnumerable<ClothingItem>>> GetAllClothes([FromQuery] string password)
     {
         var correctPassword = _configuration["AppOptions:AccessPassword"];
-        if (request.Password != correctPassword) return Unauthorized("Błędne hasło.");
+        if (password != correctPassword) return Unauthorized("Błędne hasło!");
 
-        var newItem = new ClothingItem { Name = request.Name, Category = request.Category };
+        var items = await _context.Clothes
+            .OrderBy(c => c.Category)
+            .ThenBy(c => c.Name)
+            .ToListAsync();
             
-        _context.Clothes.Add(newItem);
-        await _context.SaveChangesAsync();
-
-        return Ok(newItem);
+        return Ok(items);
     }
-}
 
 // Klasa DTO (Data Transfer Object) zostaje na dole
 public class AddClothesDto
