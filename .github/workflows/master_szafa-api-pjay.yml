@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'OutfitRandomizer.Api/**' # Będzie śledzić tylko zmiany w folderze backendu
+      - '.github/workflows/master_szafa-api-pjay.yml'
   workflow_dispatch:
 
 jobs:
