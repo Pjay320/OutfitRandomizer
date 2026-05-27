@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OutfitRandomizer.Api.Data;
 using OutfitRandomizer.Api.Models;
-using Microsoft.Extensions.Configuration; // <-- Dodałem to, żeby czytać ustawienia z Azure
+using Microsoft.Extensions.Configuration; 
 
 namespace OutfitRandomizer.Api.Controllers;
 
@@ -11,10 +11,9 @@ namespace OutfitRandomizer.Api.Controllers;
 public class ClothesController : ControllerBase
 {
     private readonly AppDbContext _context;
-    private readonly IConfiguration _configuration; // <-- Zmienna do trzymania konfiguracji
+    private readonly IConfiguration _configuration;
     private readonly Random _random = new();
 
-    // Dodaliśmy IConfiguration do konstruktora!
     public ClothesController(AppDbContext context, IConfiguration configuration)
     {
         _context = context;
@@ -73,6 +72,7 @@ public class ClothesController : ControllerBase
         return Ok(result);
     }
 
+    // --- NOWY ENDPOINT DO POBIERANIA CAŁEJ TABELI ---
     [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<ClothingItem>>> GetAllClothes([FromQuery] string password)
     {
@@ -87,7 +87,23 @@ public class ClothesController : ControllerBase
         return Ok(items);
     }
 
-// Klasa DTO (Data Transfer Object) zostaje na dole
+    // --- ENDPOINT DO DODAWANIA UBRAŃ ---
+    [HttpPost("add")]
+    public async Task<IActionResult> AddClothingItem([FromBody] AddClothesDto request)
+    {
+        var correctPassword = _configuration["AppOptions:AccessPassword"];
+        if (request.Password != correctPassword) return Unauthorized("Błędne hasło.");
+
+        var newItem = new ClothingItem { Name = request.Name, Category = request.Category };
+            
+        _context.Clothes.Add(newItem);
+        await _context.SaveChangesAsync();
+
+        return Ok(newItem);
+    }
+}
+
+// Klasa DTO potrzebna do dodawania ubrań
 public class AddClothesDto
 {
     public string Name { get; set; } = "";
