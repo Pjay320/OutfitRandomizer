@@ -100,7 +100,7 @@ public class ClothesController : ControllerBase
         return Ok(newItem);
     }
 
-    // --- ENDPOINT DO USUWANIA UBRAŃ ---
+    // --- ENDPOINT DO USUWANIA UBRAŃ TA ---
     [HttpDelete("delete/{id}")]
     public async Task<IActionResult> DeleteClothingItem(int id, [FromQuery] string password)
     {
