@@ -72,7 +72,6 @@ public class ClothesController : ControllerBase
         return Ok(result);
     }
 
-    // --- NOWY ENDPOINT DO POBIERANIA CAŁEJ TABELI ---
     [HttpGet("all")]
     public async Task<ActionResult<IEnumerable<ClothingItem>>> GetAllClothes([FromQuery] string password)
     {
@@ -87,7 +86,6 @@ public class ClothesController : ControllerBase
         return Ok(items);
     }
 
-    // --- ENDPOINT DO DODAWANIA UBRAŃ ---
     [HttpPost("add")]
     public async Task<IActionResult> AddClothingItem([FromBody] AddClothesDto request)
     {
@@ -101,9 +99,24 @@ public class ClothesController : ControllerBase
 
         return Ok(newItem);
     }
+
+    // --- ENDPOINT DO USUWANIA UBRAŃ ---
+    [HttpDelete("delete/{id}")]
+    public async Task<IActionResult> DeleteClothingItem(int id, [FromQuery] string password)
+    {
+        var correctPassword = _configuration["AppOptions:AccessPassword"];
+        if (password != correctPassword) return Unauthorized("Błędne hasło.");
+
+        var item = await _context.Clothes.FindAsync(id);
+        if (item == null) return NotFound("Nie znaleziono takiego ubrania.");
+
+        _context.Clothes.Remove(item);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
 }
 
-// Klasa DTO potrzebna do dodawania ubrań
 public class AddClothesDto
 {
     public string Name { get; set; } = "";

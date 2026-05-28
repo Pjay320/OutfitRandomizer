@@ -1,14 +1,15 @@
 ﻿@page "/"
 @using System.Net.Http.Json
 @inject HttpClient Http
+@inject IJSRuntime JS
 
-<PageTitle>Gambling Outfit</PageTitle>
+<PageTitle>Gambling outfitu</PageTitle>
 
 <div class="page-wrapper">
     
     <header class="main-header">
-        <h1 class="main-title">Gambling Outfit</h1>
-        
+        <h1 class="main-title">Gambling outfitu</h1>
+        <p class="main-subtitle">Wylosuj</p>
     </header>
 
     <div class="content-grid">
@@ -74,7 +75,7 @@
                 </div>
             
                 <button class="btn-chic-secondary" @onclick="DodajUbranie" disabled="@isAdding">
-                    @(isAdding ? "Dodawanie do bazy..." : "Dodaj do szafy")
+                    @(isAdding ? "Dodawanie do bazy..." : "Dodaj to szafy")
                 </button>
             
                 @if (!string.IsNullOrEmpty(addMessage))
@@ -97,6 +98,7 @@
                                 <tr>
                                     <th>Kategoria</th>
                                     <th>Nazwa przedmiotu</th>
+                                    <th style="text-align: center;">Usuń</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -105,6 +107,11 @@
                                     <tr>
                                         <td><span class="table-category-tag">@item.Category</span></td>
                                         <td class="table-item-name">@item.Name</td>
+                                        <td style="text-align: center;">
+                                            <button class="btn-delete" title="Usuń z szafy" @onclick="() => UsunUbranie(item.Id, item.Name)">
+                                                ✖
+                                            </button>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
@@ -121,13 +128,13 @@
 
             <div class="chic-card gallery-card mt-4">
                 <h2 class="section-title mb-2">Galeria Gwiazd</h2>
-                <p class="section-subtitle mb-4">meow meow meow</p>
+                <p class="section-subtitle mb-4">meow meow</p>
 
                 <div class="gallery-grid">
                     @foreach (var imgUrl in galleryImages)
                     {
                         <div class="gallery-item">
-                            <img src="@imgUrl" alt="N"/>
+                            <img src="@imgUrl" alt="Zdjęcie inspiracji" />
                         </div>
                     }
                 </div>
@@ -138,13 +145,13 @@
 </div>
 
 <style>
-    /* STYLIZACJA PALETY BARW (Soft Glam / Rose Gold / Burgundy) */
+    /* STYLIZACJA PALETY BARW */
     :root {
         --bg-main: #fcf9f6;
-        --color-primary: #5c1d34;     /* Głęboki burgund */
-        --color-secondary: #a87c85;   /* Brudny róż */
-        --color-accent: #eedad7;      /* Jasny pastelowy róż */
-        --text-dark: #3a3032;         /* Ciemny matowy brązowy/szary */
+        --color-primary: #5c1d34;     
+        --color-secondary: #a87c85;   
+        --color-accent: #eedad7;      
+        --text-dark: #3a3032;         
         --text-muted: #8c7b7e;
         --card-bg: #ffffff;
     }
@@ -298,6 +305,21 @@
         transform: translateY(-1px);
     }
 
+    .btn-delete {
+        background: none;
+        border: none;
+        color: #d18b95;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        padding: 5px;
+    }
+
+    .btn-delete:hover {
+        color: #8c263c;
+        transform: scale(1.2);
+    }
+
     /* BLOKI REZULTATÓW LOSOWANIA */
     .results-container {
         display: flex;
@@ -427,43 +449,8 @@
         transform: scale(1.08);
     }
 
-    .gallery-upload-item {
-        width: 130px;
-        height: 130px;
-        border-radius: 12px;
-        border: 2px dashed rgba(168, 124, 133, 0.4);
-        background-color: #fffbfb;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        padding: 10px;
-        text-align: center;
-    }
-
-    .gallery-upload-item:hover {
-        background-color: var(--color-accent);
-        border-color: var(--color-secondary);
-    }
-
-    .upload-icon {
-        font-size: 1.8rem;
-        color: var(--color-secondary);
-        font-weight: 300;
-        line-height: 1;
-        margin-bottom: 4px;
-    }
-
-    .upload-text {
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: var(--color-secondary);
-    }
-
     /* RESPNSYWRNOŚĆ */
-    @@media (max-width: 992px) {
+    @media (max-width: 992px) {
         .content-grid {
             flex-direction: column;
             align-items: center;
@@ -486,7 +473,14 @@
 
     private List<ClothingItem>? allClothes;
     private bool isLoggedIn = false;
-    
+
+    private List<string> galleryImages = new List<string>
+    {
+        "images/malw1.png",
+        "images/malw2.png",
+        "images/malw3.png",
+    };
+
     private async Task AutoryzujILosuj()
     {
         await Losuj();
@@ -589,16 +583,28 @@
         }
     }
 
-    // Podajesz ścieżki do zdjęć z folderu wwwroot/images/
-    private List<string> galleryImages = new List<string>
+    private async Task UsunUbranie(int id, string nazwa)
     {
-        "images/malw1.png",
-        "images/malw2.png",
-        "images/malw3.png",
+        bool confirmed = await JS.InvokeAsync<bool>("confirm", $"Czy na pewno chcesz usunąć '{nazwa}' ze swojej szafy?");
         
-    };
+        if (confirmed)
+        {
+            try
+            {
+                var response = await Http.DeleteAsync($"api/clothes/delete/{id}?password={password}");
+                if (response.IsSuccessStatusCode)
+                {
+                    await PobierzBaze();
+                }
+            }
+            catch (Exception)
+            {
+            }
+        }
+    }
 
     public class ClothingItem {
+        public int Id { get; set; }
         public string Name { get; set; } = "";
         public string Category { get; set; } = "";
     }
